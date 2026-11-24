@@ -13,5 +13,5 @@ jobs:
           git config user.email "ito8880@users.noreply.github.com"
           git rm index.html
           git mv yi-teng-guang-yan-purohuiru.html index.html
-          git commit -m "Remove retake mention"
+          git commit -m "Add SFF link card"
           git push
