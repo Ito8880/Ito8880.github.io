@@ -13,5 +13,5 @@ jobs:
           git config user.email "ito8880@users.noreply.github.com"
           git rm index.html
           git mv yi-teng-guang-yan-purohuiru.html index.html
-          git commit -m "Add circuit/logic theme"
+          git commit -m "Add SFF affiliation"
           git push
