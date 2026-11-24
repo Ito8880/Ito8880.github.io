@@ -219,10 +219,75 @@
   .modal-meta b{display:block;font-size:12px;color:var(--sea);letter-spacing:.06em;margin-bottom:4px}
   .modal-meta span{font-size:14px}
   .close-btn{width:100%;background:var(--ink);color:var(--bg);border:none;margin-top:8px}
-  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  /* ===== POLISH PASS ===== */
+  ::selection{background:var(--sea);color:#fff}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+  section{padding:64px 0}
+  section[id],#want{scroll-margin-top:84px}
+
+  /* scroll progress */
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--sea),var(--accent));z-index:60}
+
+  /* section headings */
+  .kicker{display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:26px;height:2px;background:var(--accent);border-radius:2px;flex:0 0 26px}
+  section h2::after{content:"";display:block;width:52px;height:4px;border-radius:2px;background:var(--accent);margin-top:16px}
+
+  /* hero extras */
+  .profile-hero .bg{animation:heroZoom 26s ease-in-out infinite alternate}
+  @keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.09)}}
+  .hero-side{position:absolute;right:30px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-family:"Shippori Mincho",serif;font-size:15px;letter-spacing:.5em;color:rgba(255,255,255,.38);z-index:1;pointer-events:none}
+  @media(max-width:1300px){.hero-side{display:none}}
+  .hero-wave{position:relative;z-index:2;display:block;width:100%;height:46px;color:var(--bg);margin-top:6px}
+  .hero-stats{display:flex;flex-wrap:wrap;margin-top:30px;padding-top:20px;border-top:1px solid rgba(255,255,255,.28)}
+  .hero-stats div{padding-right:24px;margin-right:24px;border-right:1px solid rgba(255,255,255,.2)}
+  .hero-stats div:last-child{border-right:none;padding-right:0;margin-right:0}
+  .hero-stats b{display:block;font-family:"Shippori Mincho",serif;font-size:27px;line-height:1.15;font-weight:800}
+  .hero-stats span{font-size:12px;color:rgba(255,255,255,.82);letter-spacing:.05em}
+  .id-card{box-shadow:inset 0 4px 0 var(--accent),0 20px 50px rgba(0,0,0,.28)}
+
+  /* scroll reveal (class + attributes are only added by JS, so no-JS still shows everything) */
+  .js-reveal [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+  .js-reveal [data-reveal].in{opacity:1;transform:none}
+  @media print{.js-reveal [data-reveal]{opacity:1 !important;transform:none !important}}
+
+  /* nav current section */
+  .strip a.active{background:var(--sea);color:#fff}
+
+  /* modal entrance */
+  dialog[open]{animation:dlgIn .28s ease}
+  @keyframes dlgIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+
+  /* back to top */
+  .to-top{position:fixed;right:16px;bottom:16px;z-index:50;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:19px;line-height:1;box-shadow:var(--shadow);cursor:pointer;opacity:.92;transition:opacity .3s ease}
+  .to-top.show{opacity:1}
+
+  @media(hover:hover){
+    .btn{transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+    .btn:hover{transform:translateY(-1px)}
+    .card{transition:transform .35s ease,box-shadow .35s ease}
+    .card:hover{transform:translateY(-5px);box-shadow:0 20px 42px rgba(20,40,50,.17)}
+    .card figure img{transition:transform .6s ease}
+    .card:hover figure img{transform:scale(1.06)}
+    .strength,.now-card,.sff-card,.panel{transition:transform .35s ease,box-shadow .35s ease}
+    .strength:hover,.now-card:hover,.sff-card:hover{transform:translateY(-4px)}
+    .id-links a,.strip a,.filter-btn,.sff-urls a{transition:background .2s ease,color .2s ease,transform .2s ease,border-color .2s ease}
+    .sff-urls a:hover{transform:translateY(-2px)}
+    .timeline li{transition:transform .3s ease}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .profile-hero .bg{animation:none}
+    dialog[open]{animation:none}
+    .js-reveal [data-reveal]{opacity:1;transform:none;transition:none}
+    .to-top{transition:none}
+  }
 </style>
 </head>
 <body>
+<div class="progress" id="scrollProgress" aria-hidden="true"></div>
+<button class="to-top" id="toTop" type="button" aria-label="ページの先頭へ戻る">↑</button>
 
 <!-- ============ SELF INTRODUCTION / QR LANDING ============ -->
 <header class="profile-hero">
@@ -248,6 +313,12 @@
           <a class="btn btn-ghost" href="#spots">浜通りスポットを見る</a>
           <a class="btn btn-ghost" href="https://github.com/Ito8880" target="_blank" rel="noopener">GitHub ↗</a>
         </div>
+        <div class="hero-stats" aria-label="このページの数字">
+          <div><b>8</b><span>浜通りスポット</span></div>
+          <div><b>4</b><span>巡った町</span></div>
+          <div><b>3日間</b><span>探究ツアー</span></div>
+          <div><b>5</b><span>取得資格</span></div>
+        </div>
       </div>
 
       <aside class="id-card" aria-label="プロフィールカード">
@@ -263,16 +334,19 @@
           <dt>志望</dt><dd>システムエンジニア／セキュリティエンジニア<br>ホワイトハッカー／ペネトレーションテスター</dd>
           <dt>活動</dt><dd>SFF — Spread From Fukushima<br>『浜通り』未来共創プロジェクト<br>WiZボランティアサークル</dd>
           <dt>趣味</dt><dd>マラソン・陸上、旅行、写真</dd>
+          <dt>メール</dt><dd><a href="mailto:kagamiishi.2023@gmail.com">kagamiishi.2023@gmail.com</a></dd>
           <dt>合言葉</dt><dd><strong>SFF — 福島から広げる</strong></dd>
         </dl>
         <div class="id-links">
-          <a class="primary" href="#contact">つながる</a>
+          <a class="primary" href="mailto:kagamiishi.2023@gmail.com">Gmailで連絡 ✉</a>
           <a href="https://github.com/Ito8880" target="_blank" rel="noopener">GitHub：Ito8880 ↗</a>
           <a href="https://wiz.ac.jp/" target="_blank" rel="noopener">WiZ 公式サイト ↗</a>
         </div>
       </aside>
     </div>
   </div>
+  <div class="hero-side" aria-hidden="true">福島・浜通りを巡る</div>
+  <svg class="hero-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,34 C220,58 460,8 720,24 C980,40 1210,56 1440,28 L1440,60 L0,60 Z" fill="currentColor"/></svg>
 </header>
 
 <nav class="strip" aria-label="ページ内メニュー">
@@ -620,9 +694,10 @@
     <div class="wrap">
       <div class="contact-band">
         <h3>つながってください — 伊藤光彦</h3>
-        <p>名刺交換ありがとうございました。IT、セキュリティ、マラソン、写真、福島・浜通りのこと — 共通の話題があれば、ぜひ声をかけてください。コードはGitHubに、旅と日常の写真はInstagramに載せています。</p>
+        <p>名刺交換ありがとうございました。IT、セキュリティ、マラソン、写真、福島・浜通りのこと — 共通の話題があれば、ぜひ声をかけてください。連絡はGmail（kagamiishi.2023@gmail.com）が一番確実です。コードはGitHubに、旅と日常の写真はInstagramに載せています。</p>
         <div class="sff-urls">
-          <a href="https://github.com/Ito8880" target="_blank" rel="noopener">GitHub：github.com/Ito8880 ↗</a>
+          <a href="mailto:kagamiishi.2023@gmail.com">Gmail：kagamiishi.2023@gmail.com ✉</a>
+          <a class="ghost" href="https://github.com/Ito8880" target="_blank" rel="noopener">GitHub：github.com/Ito8880 ↗</a>
           <a class="ghost" href="https://wiz.ac.jp/" target="_blank" rel="noopener">通っている学校：WiZ 公式サイト ↗</a>
           <a class="ghost" href="https://www.instagram.com/reel/DgHQexuj7rp/" target="_blank" rel="noopener">浜通りツアーのリール（Instagram）↗</a>
           <a class="ghost" href="https://spreadfromfukushima.studio.site/" target="_blank" rel="noopener">SFF 公式サイト ↗</a>
@@ -638,6 +713,7 @@
     <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center">
       <strong style="color:var(--ink);font-family:'Shippori Mincho',serif;font-size:18px">伊藤光彦 — 自己紹介</strong>
       <div style="display:flex;flex-wrap:wrap;gap:8px 18px">
+        <a href="mailto:kagamiishi.2023@gmail.com">Gmail：kagamiishi.2023@gmail.com ✉</a>
         <a href="https://github.com/Ito8880" target="_blank" rel="noopener">GitHub ↗</a>
         <a href="https://wiz.ac.jp/" target="_blank" rel="noopener">WiZ 国際情報工科自動車大学校 ↗</a>
         <a href="https://www.instagram.com/reel/DgHQexuj7rp/" target="_blank" rel="noopener">浜通り探究ツアーのリール（Instagram）↗</a>
@@ -766,6 +842,77 @@ document.querySelectorAll('[data-open]').forEach(function(btn){
 document.getElementById('dlgClose').addEventListener('click', function(){ dlg.close(); });
 dlg.addEventListener('click', function(e){ if(e.target === dlg) dlg.close(); });
 renderWant();
+
+/* ===== POLISH: reveal / scrollspy / progress / back-to-top ===== */
+var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var revealEls = document.querySelectorAll('.factbox,.strength,.now-card,.like,.card,.sff-card,.sff-links,.timeline li,.panel,.contact-band,.ono-strip');
+if('IntersectionObserver' in window && !reduceMotion && revealEls.length){
+  document.documentElement.classList.add('js-reveal');
+  var revealObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        var el = en.target;
+        el.classList.add('in');
+        revealObs.unobserve(el);
+        setTimeout(function(){ el.removeAttribute('data-reveal'); el.style.transitionDelay = ''; }, 950);
+      }
+    });
+  }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+  revealEls.forEach(function(el, i){
+    el.setAttribute('data-reveal','');
+    el.style.transitionDelay = ((i % 3) * 70) + 'ms';
+    revealObs.observe(el);
+  });
+  /* Safety net: never leave content hidden — reveal everything shortly after
+     load (covers full-page captures, print, and any observer edge case). */
+  var revealAll = function(){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+    revealObs.disconnect();
+    setTimeout(function(){
+      revealEls.forEach(function(el){ el.removeAttribute('data-reveal'); el.style.transitionDelay = ''; });
+      document.documentElement.classList.remove('js-reveal');
+    }, 900);
+  };
+  setTimeout(revealAll, 600);
+  window.addEventListener('beforeprint', revealAll);
+}
+
+var stripLinks = document.querySelectorAll('.strip a[href^="#"]');
+if('IntersectionObserver' in window && stripLinks.length){
+  var spyMap = {};
+  stripLinks.forEach(function(a){ spyMap[a.getAttribute('href').slice(1)] = a; });
+  var spyObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        stripLinks.forEach(function(a){ a.classList.remove('active'); });
+        var link = spyMap[en.target.id];
+        if(link) link.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-38% 0px -55% 0px'});
+  Object.keys(spyMap).forEach(function(id){
+    var s = document.getElementById(id);
+    if(s) spyObs.observe(s);
+  });
+}
+
+var prog = document.getElementById('scrollProgress');
+var toTop = document.getElementById('toTop');
+function onScroll(){
+  var h = document.documentElement;
+  var max = h.scrollHeight - h.clientHeight;
+  var y = window.scrollY || h.scrollTop || 0;
+  if(prog) prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+  if(toTop) toTop.classList.toggle('show', y > 600);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+if(toTop){
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior: reduceMotion ? 'auto' : 'smooth'});
+  });
+}
 </script>
 </body>
 </html>
